@@ -1,0 +1,8 @@
+#!/bin/zsh
+# Per-shell settings.
+
+# Other.
+export EDITOR=kak
+export TERMINAL=st
+export BROWSER=firefox
+export PAGER=less

@@ -1,0 +1,13 @@
+# zathura document viewer configuration
+
+map [normal] d scroll half-down
+map [normal] u scroll half-up
+map [fullscreen] d scroll half-down
+map [fullscreen] u scroll half-up
+
+set font 'IBM Plex Mono 13'
+set guioptions ''
+set recolor-darkcolor gray90
+set window-title-basename true
+set window-title-page true
+set selection-clipboard clipboard

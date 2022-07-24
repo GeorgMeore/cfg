@@ -1,0 +1,14 @@
+[alias]
+	a = add
+	au = a --update
+	u = restore --staged
+	r = restore
+	s = status
+	d = diff
+	dc = diff --cached
+	ci = commit
+	br = branch
+	co = checkout
+	lg = log --name-status
+	lga = lg --all --graph
+	lp = log -p

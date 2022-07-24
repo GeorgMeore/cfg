@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# logging
+exec 2>~/.cache/xinit.${DISPLAY#:}.log
+
+# settings
+xset r rate 300 30
+xrdb ~/.xresources.d/*
+
+# autostart
+sb &
+
+# start window manager
+exec dwm

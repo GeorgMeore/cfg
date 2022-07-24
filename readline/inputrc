@@ -1,0 +1,8 @@
+# readline configuration:
+
+# options
+set blink-matching-paren on
+
+# bindings
+"\ep":history-search-backward
+"\en":history-search-forward

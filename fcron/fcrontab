@@ -1,0 +1,12 @@
+# Scheduled tasks.
+
+PATH = /usr/bin:/usr/local/bin:/usr/local/sbin:/home/ggp/.local/bin
+
+# disable mail and success logging
+!mail(false),nolog(true)
+
+# check for RSS updates
+@ 10 flock -e -w2 ~/.sfeed/ sfeed_update
+
+# update manual page index cache
+@ 1h mandb

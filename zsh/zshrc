@@ -1,0 +1,38 @@
+#!/bin/zsh
+# Per-interactive-shell settings.
+
+# no path hashing
+setopt nohashcmds
+
+# don't send sighup to jobs when exitting
+setopt nohup
+
+# disable ctrl-s
+stty -ixon
+
+# autocompletion
+autoload -U compinit && compinit -d ~/.zsh/compdump
+zstyle ':completion:*' menu select
+
+# history
+setopt incappendhistory
+setopt histignorespace
+setopt histignorealldups
+setopt histsavenodups
+HISTSIZE=100000
+SAVEHIST=$HISTSIZE
+HISTFILE=~/.zsh/history
+
+# line editing
+bindkey '^u' backward-kill-line
+bindkey '^[n' history-beginning-search-forward
+bindkey '^[p' history-beginning-search-backward
+bindkey '^[f'  emacs-forward-word
+bindkey '^[[Z' reverse-menu-complete
+WORDCHARS='~-_*.'
+
+# source files from rc.d
+for file in ~/.zsh/rc.d/*.zsh
+	source "$file"
+for file in ~/.zsh/rc.d/*.sh
+	emulate sh -c '. "$file"'

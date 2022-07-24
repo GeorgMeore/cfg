@@ -1,0 +1,18 @@
+# kak configuration file:
+
+# enable line numbering
+add-highlighter global/rnu number-lines -relative -hlcursor
+
+# highlight trailing whitespaces
+add-highlighter global/trws regex \h+$ 0:Error
+
+# highlight matching paired characters
+add-highlighter global/match show-matching
+
+# indent with \t
+set-option global indentwidth 0
+set-option global tabstop     4
+
+# helper
+set-option global ui_options terminal_assistant=none
+set-option global autoinfo   command
