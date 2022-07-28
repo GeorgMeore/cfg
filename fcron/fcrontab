@@ -6,7 +6,7 @@ PATH = /usr/bin:/usr/local/bin:/usr/local/sbin:/home/ggp/.local/bin
 !mail(false),nolog(true)
 
 # check for RSS updates
-@ 10 flock -e -w2 ~/.sfeed/ sfeed_update
+@ 10 sfeed_update
 
 # update manual page index cache
 @ 1h mandb
