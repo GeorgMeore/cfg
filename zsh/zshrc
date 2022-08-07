@@ -1,11 +1,10 @@
 #!/bin/zsh
 # Per-interactive-shell settings.
 
-# no path hashing
-setopt nohashcmds
-
-# don't send sighup to jobs when exitting
-setopt nohup
+# some useful options
+setopt nohashcmds   # no path hashing
+setopt rmstarsilent # no rm glob warnings
+setopt nohup        # don't sighup jobs when exitting
 
 # disable ctrl-s
 stty -ixon
