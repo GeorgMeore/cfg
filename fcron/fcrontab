@@ -2,8 +2,8 @@
 
 PATH = /usr/bin:/usr/local/bin:/usr/local/sbin:/home/ggp/.local/bin
 
-# disable mail and success logging
-!mail(false),nolog(true)
+# options
+!mail(false),nolog(true),bootrun(true)
 
 # check for RSS updates
 @ 10 sfeed_update
