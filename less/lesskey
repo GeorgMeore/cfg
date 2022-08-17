@@ -8,7 +8,6 @@ l right-scroll
 ^w word-backspace
 
 #env
-LESS = -SRci
 LESSHISTFILE = -
 LESS_TERMCAP_md = \e[1;37m
 LESS_TERMCAP_me = \e[0m

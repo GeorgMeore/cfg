@@ -1,8 +1,11 @@
 #!/bin/zsh
 # Per-shell settings.
 
-# Other.
+# programs
 export EDITOR=kak
 export TERMINAL=st
 export BROWSER=firefox
 export PAGER=less
+
+# less settings
+export LESS=-SRci
