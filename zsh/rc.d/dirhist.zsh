@@ -8,8 +8,8 @@ dirhistsize=100
 cd() {
 	builtin cd "$@" || return
 	case $PWD in
-		~|/proc/*|/tmp/*)
-			;; # ignore home, /proc and /tmp
+		~|/proc/*|/tmp/*|~/dl/*)
+			;; # ignore
 		*)
 			echo "$PWD" >>"$dirhistfile"
 	esac
