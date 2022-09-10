@@ -2,9 +2,10 @@
 # Per-interactive-shell settings.
 
 # some useful options
-setopt nohashcmds   # no path hashing
-setopt rmstarsilent # no rm glob warnings
-setopt nohup        # don't sighup jobs when exitting
+setopt nohashcmds         # no path hashing
+setopt rmstarsilent       # no rm glob warnings
+setopt nohup              # don't sighup jobs on exit
+setopt nocheckrunningjobs # report only suspended jobs on exit
 
 # disable ctrl-s
 stty -ixon
