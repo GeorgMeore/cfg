@@ -4,7 +4,7 @@
 declare-option bool autous false
 
 hook global WinSetOption autous=true %{
-	hook -group autous buffer ModeChange pop:insert:.* %{nop %sh{setxkbmap us}}
+	hook -group autous buffer ModeChange pop:insert:.* %{nop %sh{kbl load us}}
 }
 
 hook global WinSetOption autous=false %{
