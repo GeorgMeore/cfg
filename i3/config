@@ -1,0 +1,97 @@
+# i3 configuration file
+
+# options
+set $mod Mod4
+font pango:IBM Plex Mono 13
+floating_modifier $mod
+mouse_warping none
+
+# change focus
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+# move focused window
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# focus parent/child container
+bindsym $mod+u       focus parent
+bindsym $mod+Shift+u focus child
+
+# toggle tiling/floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling/floating windows
+bindsym $mod+space focus mode_toggle
+
+# split current window
+bindsym $mod+semicolon split toggle
+
+# toggle fullscreen
+bindsym $mod+f fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+o layout toggle split
+bindsym $mod+i layout tabbed
+bindsym $mod+Shift+i layout stacked
+
+# switch to workspace
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
+
+# wm control
+bindsym $mod+Shift+q exit
+bindsym $mod+r       reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+c kill
+
+# commands
+bindsym  $mod+Shift+Return exec --no-startup-id st
+bindsym  $mod+p            exec --no-startup-id dmenu_run
+bindsym  Alt_R             exec --no-startup-id tp toggle
+bindsym  Print             exec --no-startup-id shot
+bindsym  Shift+Print       exec --no-startup-id ffrec
+
+# audio
+bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 1 && sbupd aud
+bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 1 && sbupd aud
+bindsym XF86AudioMute        exec --no-startup-id pamixer -t && sbupd aud
+
+# brightness
+bindsym XF86MonBrightnessUp         exec --no-startup-id brt up 10 && sbupd disp
+bindsym Shift+XF86MonBrightnessUp   exec --no-startup-id brt up 1 && sbupd disp
+bindsym XF86MonBrightnessDown       exec --no-startup-id brt down 10 && sbupd disp
+bindsym Shift+XF86MonBrightnessDown exec --no-startup-id brt down 1 && sbupd disp
+
+# window settings
+for_window [all] border normal 2
+for_window [class=Pavucontrol] floating enable
+
+# statusbar settings
+bar {
+	status_command sb -s
+}
