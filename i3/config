@@ -28,8 +28,9 @@ bindsym $mod+Shift+space floating toggle
 # change focus between tiling/floating windows
 bindsym $mod+space focus mode_toggle
 
-# split current window
-bindsym $mod+semicolon split toggle
+# split/unsplit current window
+bindsym $mod+semicolon       split toggle
+bindsym $mod+Shift+semicolon floating toggle, floating toggle
 
 # toggle fullscreen
 bindsym $mod+f fullscreen toggle
