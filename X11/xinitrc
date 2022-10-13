@@ -5,10 +5,7 @@ exec 2>~/.cache/xinit.${DISPLAY#:}.log
 
 # settings
 xset r rate 300 30
-xrdb ~/.xresources.d/*
-
-# autostart
-sb &
+cat ~/.xresources.d/* | xrdb
 
 # start window manager
-exec dwm
+exec i3
