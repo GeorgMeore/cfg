@@ -1,5 +1,5 @@
 install:
-	cp sxiv.xresources ~/.xresources.d
+	cp sxiv.conf ~/.xresources.d
 
 uninstall:
-	rm -f ~/.xresources.d/sxiv.xresources
+	rm -f ~/.xresources.d/sxiv.conf
