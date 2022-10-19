@@ -1,10 +1,9 @@
 #!/bin/sh
 
-# logging
-exec 2>~/.cache/xinit.${DISPLAY#:}.log
-
 # settings
 xset r rate 300 30
+setxkbmap -option grp:shifts_toggle
+setxkbmap -layout us,ru
 cat ~/.xresources.d/* | xrdb
 
 # start window manager
