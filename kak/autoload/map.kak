@@ -1,5 +1,10 @@
 # Miscellaneous key-bindings.
 
+# old-style <space> and <comma>
+map global normal <space> ,
+map global normal <a-space> <a-,>
+map global normal , <space>
+
 # bindings for paired characters
 map global insert <a-[>  []<left>
 map global insert <a-{>  {}<left>
@@ -7,9 +12,6 @@ map global insert <a-(>  ()<left>
 map global insert <a-">  \""<left>
 map global insert <a-'>  \''<left>
 map global insert <a-lt> <lt><gt><left>
-
-# make
-map global user k :make<ret>
 
 # increase/decrease tabstop
 map global user > %{:eval %sh{echo set current tabstop $((kak_opt_tabstop + 4))}<ret>}
