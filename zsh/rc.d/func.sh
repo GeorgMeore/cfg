@@ -1,7 +1,7 @@
 # Useful functions.
 
 # cheat.sh wrapper
-cheat() {
+tldr() {
 	curl -s "cheat.sh/$(echo "$@" | sed 's/ /%20/g')" | less -R
 }
 
