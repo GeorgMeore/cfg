@@ -94,5 +94,5 @@ for_window [class=Pavucontrol] floating enable
 
 # statusbar settings
 bar {
-	status_command sb -s
+	status_command sb
 }
