@@ -3,10 +3,11 @@
 	au = a --update
 	u = restore --staged
 	r = restore
-	s = status
+	s = status --short
 	d = diff
 	dc = diff --cached
 	ci = commit
+	b = branch --show-current
 	br = branch
 	co = checkout
 	lg = log --name-status
