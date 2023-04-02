@@ -29,3 +29,12 @@ k() {
 	read -r sig
 	kill -"$sig" "$pid"
 }
+
+# interactive cd
+icd() {
+	while :; do
+		next=$({ echo ..; ls -Ap; } | fzf)
+		[ "$next" ] || break
+		builtin cd "$next"
+	done
+}
