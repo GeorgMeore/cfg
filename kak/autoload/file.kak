@@ -8,3 +8,4 @@ hook global BufCreate .*\.(z|ba|c|k|mk|)?sh %{set-option buffer filetype sh}
 hook global BufCreate /tmp/(z|ba|c|k|mk|)?sh.* %{set-option buffer filetype sh}
 hook global BufCreate .*\.go %{set-option buffer filetype go}
 hook global BufCreate [Mm]akefile %{set-option buffer filetype makefile}
+hook global BufCreate .*\.tex %{set-option buffer filetype tex}
