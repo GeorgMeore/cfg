@@ -1,5 +1,6 @@
 [alias]
 	a = add
+	ap = a --patch
 	au = a --update
 	u = restore --staged
 	r = restore
