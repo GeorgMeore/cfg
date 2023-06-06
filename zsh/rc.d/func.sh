@@ -1,10 +1,5 @@
 # Useful functions.
 
-# cheat.sh wrapper
-tldr() {
-	curl -s "cheat.sh/$(echo "$@" | sed 's/ /%20/g')" | less -R
-}
-
 # walk file tree
 walk() {
 	for file in *; do
