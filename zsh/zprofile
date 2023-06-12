@@ -18,6 +18,5 @@ export TEXMFCONFIG=$XDG_CONFIG_HOME/texmf
 export ICEAUTHORITY=$XDG_CACHE_HOME/ICEauthority
 export RLWRAP_HOME=$XDG_CACHE_HOME/rlwrap
 export XAUTHORITY=$XDG_DATA_HOME/xorg/xauthority
-export QT_SCALE_FACTOR=1.2
 export _JAVA_AWT_WM_NONREPARENTING=1 # fixes java programs
 export NO_AT_BRIDGE=1 # fixes some gtk warnings
