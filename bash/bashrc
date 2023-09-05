@@ -1,0 +1,15 @@
+# Per-interactive-shell settings.
+
+PS1='[\u@\h:\W]\$ '
+
+HISTSIZE=1000
+SAVEHIST=1000
+
+alias ls='ls --color=auto'
+alias la='ls -A'
+alias ll='ls -lhp'
+alias lla='ll -A'
+alias grep='grep --color=auto'
+alias e='$EDITOR'
+alias ..='cd ..'
+alias ...='cd ../..'
