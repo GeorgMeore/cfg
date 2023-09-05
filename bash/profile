@@ -1,0 +1,7 @@
+# Per-login settings.
+
+export EDITOR=kak
+export PATH=$HOME/bin:$HOME/.local/bin:$PATH
+
+# load per-interactive-shell settings if need be
+case $- in *i*) . ./.bashrc ;; esac
