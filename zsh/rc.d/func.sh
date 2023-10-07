@@ -28,7 +28,7 @@ k() {
 # interactive cd
 icd() {
 	while :; do
-		next=$({ echo ..; ls -Ap; } | fzf)
+		next=$({ echo ..; ls -Ap; } | fzf --cycle)
 		[ "$next" ] || break
 		builtin cd "$next"
 	done
