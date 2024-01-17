@@ -1,3 +1,7 @@
+[init]
+	# please don't cancel me...
+	defaultBranch = master
+
 [alias]
 	a = add
 	ap = a --patch
