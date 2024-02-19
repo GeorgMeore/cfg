@@ -1,12 +1,40 @@
 #!/bin/zsh
 # Per-interactive-shell settings.
 
+# autostart the graphical environment
+[ "$(tty)" = /dev/tty1 ] && exec startx
+
+# some useful aliases
+alias diff='diff --color=auto'
+alias grep='grep --color=auto'
+alias ls='ls --color=auto'
+alias la='ls -A'
+alias ll='ls -lhp'
+alias lla='ll -A'
+alias ..='cd ..'
+alias ...='cd ../../'
+alias mv='mv -iv'
+alias rm='rm -Ivd'
+alias cp='cp -iv'
+alias ln='ln -iv'
+alias e='$EDITOR'
+alias p='$PAGER'
+alias gdb='gdb -q'
+alias R='R -q --no-save'
+alias fzf='fzf --layout=reverse'
+alias s='systemctl --user'
+alias j='journalctl --user -e'
+
 # some useful options
 setopt nohashcmds          # no path hashing
 setopt rmstarsilent        # no rm glob warnings
 setopt nohup               # don't sighup jobs on exit
 setopt nocheckrunningjobs  # report only suspended jobs on exit
 setopt interactivecomments # enablie repl comments
+setopt prompt_subst        # prompt reevaluation
+
+# "local" history
+HISTSIZE=1000
 
 # disable ctrl-s
 stty -ixon
@@ -14,15 +42,6 @@ stty -ixon
 # autocompletion
 autoload -U compinit && compinit -d ~/.zsh/compdump
 zstyle ':completion:*' menu select
-
-# history
-setopt incappendhistory
-setopt histignorespace
-setopt histignorealldups
-setopt histsavenodups
-HISTSIZE=100000
-SAVEHIST=$HISTSIZE
-HISTFILE=~/.zsh/history
 
 # line editing
 bindkey '^u' backward-kill-line
@@ -32,8 +51,76 @@ bindkey '^[f'  emacs-forward-word
 bindkey '^[[Z' reverse-menu-complete
 WORDCHARS='~-_*.'
 
-# source files from rc.d
-for file in ~/.zsh/rc.d/*.zsh
-	source "$file"
-for file in ~/.zsh/rc.d/*.sh
-	emulate sh -c '. "$file"'
+# we need this to load hooks
+autoload -Uz add-zsh-hook
+
+# prompt
+_generate_prompt() {
+	err='%(0?//%F{red}%?%f:)'
+	job='%(1j/%F{magenta}%jj%f:/)'
+	if ! git status >/dev/null 2>&1; then
+		git=''
+	elif [ "$(git status --short)" ]; then
+		git="%F{red}g%f:"
+	else
+		git="%F{green}g%f:"
+	fi
+	echo "%n@%M:%~ ${git}${job}${err}%# "
+}; PROMPT='$(_generate_prompt)'
+
+# deduplicate and trim lines, useful for history-like stuff
+dedup() {
+	tmp=$(mktemp ~/.cache/XXXXX) || return
+	tac "$1" | awk '!seen[$0]++' | head -n "$2" | tac >"$tmp"
+	command mv "$tmp" "$1"
+}
+
+# directory history
+cd() {
+	builtin cd "$@" || return
+	case $PWD in
+		~|/proc/*|/tmp/*|~/dl/*)
+			;; # ignore
+		*)
+			echo "$PWD" >>~/.zsh/dirhist
+	esac
+}
+
+_dirhist() {
+	[ -f ~/.zsh/dirhist ] && dedup ~/.zsh/dirhist 100 && {
+		dir=$(fzf --tac +s --prompt='cd> ' <~/.zsh/dirhist)
+		[ "$dir" ] || return
+		cd "$dir"
+		zle reset-prompt
+	}
+}; zle -N _dirhist && bindkey '^t' _dirhist
+
+# "global" history
+_savehist() {
+	trimmed=$(echo -E "$1")
+	case $1 in
+		' '*|'#'*|?|??|???|????|'cd '*|'man '*)
+			;; # ignore
+		*)
+			serialized=$(echo -nE "$trimmed" | sed -Ez 's/\\/\\\\/g;s/\n/\\n/g')
+			echo -E "$serialized" >>~/.zsh/cmdhist
+	esac
+}; add-zsh-hook preexec _savehist
+
+_hist() {
+	[ -f ~/.zsh/cmdhist ] && dedup ~/.zsh/cmdhist 1000 && {
+		item=$(fzf -q "$LBUFFER" --tac +s --prompt='run> ' <~/.zsh/cmdhist)
+		[ "$item" ] || return
+		deserialized=$(echo -E "$item" | sed -Ez 's/((^|[^\])(\\\\)*)\\n/\1\n/g;s/\\\\/\\/g')
+		LBUFFER=$deserialized RBUFFER=
+	}
+}; zle -N _hist && bindkey '^r' _hist
+
+# terminal title
+_ptitle() {
+	printf "\e]0;%s\a" "zsh: ${PWD/$HOME/~}"
+}; add-zsh-hook precmd _ptitle
+
+_etitle() {
+	printf "\e]0;%s\a" "zsh! $1"
+}; add-zsh-hook preexec _etitle
