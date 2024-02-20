@@ -32,6 +32,7 @@ setopt nohup               # don't sighup jobs on exit
 setopt nocheckrunningjobs  # report only suspended jobs on exit
 setopt interactivecomments # enablie repl comments
 setopt prompt_subst        # prompt reevaluation
+setopt histignoredups      # ignore "local" history duplicates
 
 # "local" history
 HISTSIZE=1000
@@ -58,62 +59,56 @@ autoload -Uz add-zsh-hook
 _generate_prompt() {
 	err='%(0?//%F{red}%?%f:)'
 	job='%(1j/%F{magenta}%jj%f:/)'
-	if ! git status >/dev/null 2>&1; then
-		git=''
-	elif [ "$(git status --short)" ]; then
-		git="%F{red}g%f:"
-	else
-		git="%F{green}g%f:"
-	fi
+	git=$(git status --short 2>/dev/null) && {
+		case $git in
+			'') git="%F{green}g%f:" ;;
+			*)  git="%F{red}g%f:"
+		esac
+	}
 	echo "%n@%M:%~ ${git}${job}${err}%# "
 }; PROMPT='$(_generate_prompt)'
 
-# deduplicate and trim lines, useful for history-like stuff
-dedup() {
-	tmp=$(mktemp ~/.cache/XXXXX) || return
-	tac "$1" | awk '!seen[$0]++' | head -n "$2" | tac >"$tmp"
-	command mv "$tmp" "$1"
+# deduplicate and trim lines (useful for history-like stuff)
+deduptrim() {
+	[ -f "$1" ] && tmp=$(mktemp ~/.cache/XXXXX) && {
+		tac "$1" | awk '!seen[$0]++' | head -n "$2" | tac >"$tmp"
+		command mv "$tmp" "$1"
+	}
 }
 
 # directory history
 cd() {
 	builtin cd "$@" || return
-	case $PWD in
-		~|/proc/*|/tmp/*|~/dl/*)
-			;; # ignore
-		*)
-			echo "$PWD" >>~/.zsh/dirhist
-	esac
+	[[ $PWD = (~|/proc/*|/tmp/*|~/dl/*) ]] && return
+	echo "$PWD" >>~/.zsh/dirhist
 }
 
 _dirhist() {
-	[ -f ~/.zsh/dirhist ] && dedup ~/.zsh/dirhist 100 && {
-		dir=$(fzf --tac +s --prompt='cd> ' <~/.zsh/dirhist)
-		[ "$dir" ] || return
-		cd "$dir"
-		zle reset-prompt
-	}
+	deduptrim ~/.zsh/dirhist 100 || return
+	dir=$(fzf --tac +s --prompt='cd> ' <~/.zsh/dirhist)
+	[ "$dir" ] || return
+	cd "$dir"
+	zle reset-prompt
 }; zle -N _dirhist && bindkey '^t' _dirhist
 
 # "global" history
 _savehist() {
 	trimmed=$(echo -E "$1")
-	case $1 in
-		' '*|'#'*|?|??|???|????|'cd '*|'man '*)
-			;; # ignore
-		*)
-			serialized=$(echo -nE "$trimmed" | sed -Ez 's/\\/\\\\/g;s/\n/\\n/g')
-			echo -E "$serialized" >>~/.zsh/cmdhist
-	esac
+	[[ $trimmed = (' '*|'#'*|?|??|???|????|'cd '*|'man '*) ]] && return
+	serialized=$(
+		echo -nE "$trimmed" | sed -Ez 's/\\/\\\\/g;s/\n/\\n/g'
+	)
+	echo -E "$serialized" >>~/.zsh/cmdhist
 }; add-zsh-hook preexec _savehist
 
 _hist() {
-	[ -f ~/.zsh/cmdhist ] && dedup ~/.zsh/cmdhist 1000 && {
-		item=$(fzf -q "$LBUFFER" --tac +s --prompt='run> ' <~/.zsh/cmdhist)
-		[ "$item" ] || return
-		deserialized=$(echo -E "$item" | sed -Ez 's/((^|[^\])(\\\\)*)\\n/\1\n/g;s/\\\\/\\/g')
-		LBUFFER=$deserialized RBUFFER=
-	}
+	deduptrim ~/.zsh/cmdhist 1000 || return
+	item=$(fzf -q "$LBUFFER" --tac +s --prompt='run> ' <~/.zsh/cmdhist)
+	[ "$item" ] || return
+	deserialized=$(
+		echo -E "$item" | sed -Ez 's/((^|[^\])(\\\\)*)\\n/\1\n/g;s/\\\\/\\/g'
+	)
+	LBUFFER=$deserialized RBUFFER=
 }; zle -N _hist && bindkey '^r' _hist
 
 # terminal title
