@@ -1,15 +1,65 @@
 # Per-interactive-shell settings.
 
-PS1='[\u@\h:\W]\$ '
+PS1='\u@\h:\w:$?\$ '
 
-HISTSIZE=1000
-SAVEHIST=1000
+HISTSIZE=10000 HISTFILE='' HISTIGNORE='&'
 
+alias rm='rm -d'
 alias ls='ls --color=auto'
 alias la='ls -A'
 alias ll='ls -lhp'
 alias lla='ll -A'
 alias grep='grep --color=auto'
+alias diff='diff --color=auto'
 alias e='$EDITOR'
 alias ..='cd ..'
 alias ...='cd ../..'
+
+deduptrim() {
+	[ -f "$1" ] && tmp=$(mktemp ~/.cache/XXXXX) && {
+		tac "$1" | awk '!seen[$0]++' | head -n "$2" | tac >"$tmp"
+		command mv "$tmp" "$1"
+	}
+}
+
+cd() {
+	builtin cd "$@" || return
+	case $PWD in
+		~|/proc/*|/tmp/*|~/dl/*)
+			;; # ignore
+		*) echo "$PWD" >>~/.dir_history
+	esac
+}
+
+icdfc() {
+	deduptrim ~/.dir_history 100 || return
+	dir=$(fzf --tac +s --prompt='cd> ' <~/.dir_history)
+	[ "$dir" ] || return
+	cd "$dir"
+}; bind '"\C-t": " icdfc\n"'
+
+icd() {
+	while :; do
+		next=$({ echo ..; ls -Ap; } | fzf --cycle)
+		[ "$next" ] || break
+		builtin cd "$next"
+	done
+}; bind '"\C-o": " icd\n"'
+
+_savehist() {
+	# dirty dirty bash tricks
+	[[ $(history 1) =~ ' '*[0-9]*'  '(.*) ]] || return
+	cmd=${BASH_REMATCH[1]}
+	case $cmd in
+		?|??|???|????|' '*|cd' '*|git' '*|man' '*)
+			;; # ignore
+		*) echo "$cmd" >>~/.cmd_history
+	esac
+}; PROMPT_COMMAND+=(_savehist)
+
+_ifc() {
+	deduptrim ~/.cmd_history 10000 || return
+	item=$(fzf --tac -q "$READLINE_LINE" <~/.cmd_history)
+	[ "$item" ] || return
+	READLINE_LINE=$item READLINE_POINT=${#item}
+}; bind -x '"\C-r": _ifc'
