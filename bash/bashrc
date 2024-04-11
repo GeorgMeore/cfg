@@ -59,7 +59,7 @@ _savehist() {
 
 _ifc() {
 	deduptrim ~/.cmd_history 10000 || return
-	item=$(fzf --tac -q "$READLINE_LINE" <~/.cmd_history)
+	item=$(fzf --tac +s -q "$READLINE_LINE" <~/.cmd_history)
 	[ "$item" ] || return
 	READLINE_LINE=$item READLINE_POINT=${#item}
 }; bind -x '"\C-r": _ifc'
