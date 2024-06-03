@@ -1,0 +1,38 @@
+" basic sane settings
+set shortmess=ltToOCFI
+set laststatus=2
+set number relativenumber
+set incsearch nohlsearch
+set autoindent
+set belloff=all
+set ttimeout ttimeoutlen=20
+set nobackup noswapfile
+set autoread
+set hidden
+
+" enable syntax highlighting
+syntax on
+
+" "automatic" indentation and plugins suck ass
+filetype plugin off
+filetype indent off
+
+" highlight trailing whitespace
+autocmd VimEnter,WinNew * match Error /\s\+$/
+
+" my custom colorscheme that reminds me of my hometown
+colorscheme spb
+
+" set <leader> to ctrl-k
+let mapleader = "\<C-k>"
+
+" some useful mappings
+inoremap <leader>[ []<left>
+inoremap <leader>( ()<left>
+inoremap <leader>{ {}<left>
+inoremap <leader>< <><left>
+inoremap <leader>" ""<left>
+inoremap <leader>' ''<left>
+nnoremap <leader>o o<esc><up>
+nnoremap <leader>O O<esc><down>
+vnoremap <leader>y "yy:call system('echo -n ' . shellescape(@y) . ' \|clip')<cr>
