@@ -1,5 +1,5 @@
 " basic sane settings
-set shortmess=ltToOCFI
+set shortmess=ltToOFI
 set laststatus=2
 set number relativenumber
 set incsearch nohlsearch
@@ -9,6 +9,7 @@ set ttimeout ttimeoutlen=20
 set nobackup noswapfile
 set autoread
 set hidden
+set showcmd
 
 " enable syntax highlighting
 syntax on
@@ -35,4 +36,4 @@ inoremap <leader>" ""<left>
 inoremap <leader>' ''<left>
 nnoremap <leader>o o<esc><up>
 nnoremap <leader>O O<esc><down>
-vnoremap <leader>y "yy:call system('echo -n ' . shellescape(@y) . ' \|clip')<cr>
+vnoremap <leader>y "yy:call system('clip', @y)<cr>
