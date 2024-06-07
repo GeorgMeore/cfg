@@ -36,4 +36,4 @@ inoremap <leader>" ""<left>
 inoremap <leader>' ''<left>
 nnoremap <leader>o o<esc><up>
 nnoremap <leader>O O<esc><down>
-vnoremap <leader>y "yy:call system('clip', @y)<cr>
+vnoremap <silent><leader>y "yy:call system('xclip -i -sel cli', @y)<cr>
