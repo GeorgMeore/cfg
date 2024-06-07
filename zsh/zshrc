@@ -119,3 +119,11 @@ _ptitle() {
 _etitle() {
 	printf "\e]0;%s\a" "zsh! $1"
 }; add-zsh-hook preexec _etitle
+
+# interactive file selection
+_insfile() {
+	escaped=$(ls -A | fzf --tac --prompt='select> ' | sed -E 's/("|\$)/\\&/g')
+	[ "$escaped" ] || return
+	[[ $LBUFFER = *' ' ]] || LBUFFER+=' '
+	LBUFFER+="\"$escaped\""
+}; zle -N _insfile && bindkey '^s' _insfile
