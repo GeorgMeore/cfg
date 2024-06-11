@@ -15,6 +15,18 @@ alias e='$EDITOR'
 alias ..='cd ..'
 alias ...='cd ../..'
 
+stty -ixon
+
+. /etc/bash_completion
+
+icd() {
+	while :; do
+		next=$({ echo ..; ls -Ap; } | fzf --cycle)
+		[ "$next" ] || break
+		builtin cd "$next"
+	done
+}; bind '"\C-o": " icd\n"'
+
 deduptrim() {
 	[ -f "$1" ] && tmp=$(mktemp ~/.cache/XXXXX) && {
 		tac "$1" | awk '!seen[$0]++' | head -n "$2" | tac >"$tmp"
@@ -38,14 +50,6 @@ icdfc() {
 	cd "$dir"
 }; bind '"\C-t": " icdfc\n"'
 
-icd() {
-	while :; do
-		next=$({ echo ..; ls -Ap; } | fzf --cycle)
-		[ "$next" ] || break
-		builtin cd "$next"
-	done
-}; bind '"\C-o": " icd\n"'
-
 _savehist() {
 	# dirty dirty bash tricks
 	[[ $(history 1) =~ ' '*[0-9]*'  '(.*) ]] || return
@@ -63,3 +67,19 @@ _ifc() {
 	[ "$item" ] || return
 	READLINE_LINE=$item READLINE_POINT=${#item}
 }; bind -x '"\C-r": _ifc'
+
+_settermtitle() {
+	printf "\e]0;%s\a" "bash: ${PWD/$HOME/'~'}"
+}; PROMPT_COMMAND+=(_settermtitle)
+
+_insfile() {
+	escaped=$(ls -A | fzf --tac | sed -E 's/("|\$)/\\&/g')
+	[ "$escaped" ] || return
+	LBUFFER=${READLINE_LINE::READLINE_POINT}
+	RBUFFER=${READLINE_LINE:READLINE_POINT}
+	[[ $LBUFFER = *' ' ]] || LBUFFER=$LBUFFER' '
+	[[ $RBUFFER = ' '* ]] || RBUFFER=' '$RBUFFER
+	LBUFFER+="\"$escaped\""
+	READLINE_LINE=$LBUFFER$RBUFFER
+	READLINE_POINT=${#LBUFFER}
+}; bind -x '"\C-s": _insfile'
