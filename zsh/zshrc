@@ -126,4 +126,5 @@ _insfile() {
 	[ "$escaped" ] || return
 	[[ $LBUFFER = *' ' ]] || LBUFFER+=' '
 	LBUFFER+="\"$escaped\""
+	[[ $RBUFFER = ' '* ]] || LBUFFER+=' '
 }; zle -N _insfile && bindkey '^s' _insfile
