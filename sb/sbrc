@@ -1,0 +1,59 @@
+# Statusbar configuration.
+
+# module: battery percentage
+bat() {
+	read -r percentage </sys/class/power_supply/BAT0/capacity
+	read -r status </sys/class/power_supply/BAT0/status
+	if [ "$status" = Charging ]; then
+		perc="charging:$percentage%"
+	elif [ "$percentage" -eq 100 ]; then
+		perc="full:$percentage%"
+	elif [ "$percentage" -gt 14 ]; then
+		perc="$percentage%"
+	else
+		perc="low:$percentage%"
+	fi
+	bat="bat: $perc"
+}
+
+# module: audio
+aud() {
+	case $(pamixer --get-mute) in
+		true) vol=off ;;
+		false) vol="$(pamixer --get-volume)%"
+	esac
+	aud="aud: $vol"
+}
+
+# module: display brightness
+disp() {
+	disp="disp: $(brt)%"
+}
+
+# module: rss updates
+rss() {
+	last=$(stat -c%X ~/.sfeed/last)
+	new=$(awk -v ts="$last" '$1 > ts' ~/.sfeed/feeds/* | wc -l)
+	case $new in
+		0) updates=none ;;
+		*) updates="new:$new" ;;
+	esac
+	rss="rss: $updates"
+}
+
+# module: date and time
+datetime() {
+	datetime=$(printf 'date: %(%a %-e %b %H:%M:%S)T')
+}
+
+# refresh frequency
+frequency=3
+
+# modules order and time intervals
+modules=(
+	aud:10
+	disp:10
+	bat:20
+	rss:$((frequency * 60 * 2))
+	datetime:1
+)
