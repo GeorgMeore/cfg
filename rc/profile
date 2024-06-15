@@ -1,0 +1,12 @@
+fn cd {
+	builtin cd $*
+	cwd=`{pwd}
+	prompt=($"cwd^'% ' '        ')
+}
+
+fn ll  { ls -lhF $* }
+fn la  { ls -A $* }
+fn lla { ll -A $* }
+fn e   { $EDITOR $* }
+
+cd .
