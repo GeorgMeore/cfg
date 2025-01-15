@@ -16,13 +16,23 @@ bat() {
 	bat="bat: $perc"
 }
 
-# module: audio
-aud() {
+# module: audio (pipewire/pulseaudio)
+pulse() {
 	case $(pamixer --get-mute) in
 		true) vol=off ;;
 		false) vol="$(pamixer --get-volume)%"
 	esac
-	aud="aud: $vol"
+	pulse="aud: $vol"
+}
+
+# module: audio (alsa)
+alsa() {
+	out=$(amixer sget Master)
+	case $out in
+		*Mono:*off*) vol=off ;;
+		*Mono:*on*) tmp=${out#*\[} vol=${tmp%%\]*}
+	esac
+	alsa="aud: $vol"
 }
 
 # module: display brightness
@@ -51,7 +61,7 @@ frequency=3
 
 # modules order and time intervals
 modules=(
-	aud:10
+	alsa:10
 	disp:10
 	bat:20
 	rss:$((frequency * 60 * 2))

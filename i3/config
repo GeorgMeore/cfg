@@ -78,9 +78,12 @@ bindsym  Print             exec --no-startup-id shot
 bindsym  Shift+Print       exec --no-startup-id ffrec
 
 # audio
-bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 1 && sb upd aud
-bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 1 && sb upd aud
-bindsym XF86AudioMute        exec --no-startup-id pamixer -t && sb upd aud
+bindsym XF86AudioRaiseVolume exec --no-startup-id amixer sset Master 1%+ && sb upd alsa
+bindsym XF86AudioLowerVolume exec --no-startup-id amixer sset Master 1%- && sb upd alsa
+bindsym XF86AudioMute        exec --no-startup-id amixer sset Master toggle && sb upd alsa
+#bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 1 && sb upd aud
+#bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 1 && sb upd aud
+#bindsym XF86AudioMute        exec --no-startup-id pamixer -t && sb upd aud
 
 # brightness
 bindsym XF86MonBrightnessUp         exec --no-startup-id brt +10 && sb upd disp
