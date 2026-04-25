@@ -76,6 +76,31 @@ deduptrim() {
 	}
 }
 
+# replace newlines with \n and \ with \\
+serialize() {
+	local s='' i
+	for ((i = 1; i <= ${#1}; i++)); do
+		case ${1[$i]} in
+		'\')   s=$s'\\' ;;
+		$'\n') s=$s'\n' ;;
+		*)     s=$s"${1[$i]}" ;;
+		esac
+	done
+	echo -E - "$s"
+}
+
+deserialize() {
+	local s='' i
+	for ((i = 1; i <= ${#1}; i++)); do
+		case ${1[$i,$i+1]} in
+		'\\') s=$s'\';   ((i++)) ;;
+		'\n') s=$s$'\n'; ((i++)) ;;
+		*)    s=$s"${1[$i]}" ;;
+		esac
+	done
+	echo -E - "$s"
+}
+
 # directory history
 cd() {
 	builtin cd "$@" || return
@@ -93,22 +118,15 @@ _dirhist() {
 
 # "global" history
 _savehist() {
-	trimmed=$(echo -E "$1")
-	[[ $trimmed = (' '*|'#'*|?|??|???|????|'cd '*|'man '*) ]] && return
-	serialized=$(
-		echo -nE "$trimmed" | sed -Ez 's/\\/\\\\/g;s/\n/\\n/g'
-	)
-	echo -E "$serialized" >>~/.zsh/cmdhist
+	[[ $1 = (' '*|'#'*|?|??|???|????|'cd '*|'man '*) ]] && return
+	serialize "${1%\n}" >>~/.zsh/cmdhist
 }; add-zsh-hook preexec _savehist
 
 _hist() {
 	deduptrim ~/.zsh/cmdhist 1000 || return
 	item=$(fzf -q "$LBUFFER" --tac +s --prompt='run> ' <~/.zsh/cmdhist)
 	[ "$item" ] || return
-	deserialized=$(
-		echo -E "$item" | sed -Ez 's/((^|[^\])(\\\\)*)\\n/\1\n/g;s/\\\\/\\/g'
-	)
-	LBUFFER=$deserialized RBUFFER=
+	LBUFFER=$(deserialize "$item") RBUFFER=
 }; zle -N _hist && bindkey '^r' _hist
 
 # terminal title
