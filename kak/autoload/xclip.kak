@@ -1,7 +1,7 @@
 # Xclip integration.
 
 define-command clip %{
-	exec '<a-|>setsid xclip -i -selection clipboard<ret>'
+	exec '<a-|>pbcopy -<ret>'
 	echo -markup {Information}yanked to system clipboard{\}
 }
 

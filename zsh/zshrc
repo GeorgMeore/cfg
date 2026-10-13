@@ -70,9 +70,9 @@ _generate_prompt() {
 
 # deduplicate and trim lines (useful for history-like stuff)
 deduptrim() {
-	[ -f "$1" ] && tmp=$(mktemp ~/.cache/XXXXX) && {
-		tac "$1" | awk '!seen[$0]++' | head -n "$2" | tac >"$tmp"
-		command mv "$tmp" "$1"
+	[ -f "$1" ] && {
+		tail -r "$1" | awk '!seen[$0]++' | head -n "$2" >~/.zsh/tmp
+		tail -r ~/.zsh/tmp >"$1"
 	}
 }
 
